@@ -35,4 +35,4 @@ randomTriangles lower upper =
         (shapes, nextSeed) = List.foldr addShape ([], initialSeed) [1..5]
         
     in
-        Debug.log "Returning triangles" shapes
+        shapes
