@@ -41,11 +41,21 @@ scene input =
         
         cursorX = toFloat mouseX - maxX
         cursorY = (toFloat mouseY - maxY) * -1 -- mouse y is upside down
-        triangles = List.map (polygon >> filled clearGrey) (Scene.randomTriangles minX maxX)
+        
+        rawTriangles = Scene.randomTriangles minX maxX
+        triangles = List.map (polygon >> filled clearGrey) rawTriangles
+        
+        rawLines = Scene.spiderWeb (cursorX, cursorY) rawTriangles
+        
+        lineToForm (point1, point2) =
+            traced (solid red) (segment point1 point2)
+            
+        lines = List.map lineToForm rawLines
+        
         
         cursor = circle 10 |> filled red |> move (cursorX, cursorY)
     in
-        collage windowWidth windowHeight (triangles ++ [cursor] )
+        collage windowWidth windowHeight (lines ++ triangles ++ [cursor] )
 
 red : Color
 red =

@@ -36,3 +36,18 @@ randomTriangles lower upper =
         
     in
         shapes
+        
+spiderWeb : 
+    (Float, Float) 
+    -> List (List (Float, Float)) 
+    -> List ((Float, Float), (Float, Float))
+    
+spiderWeb centerPoint listOfShapes =
+    let
+        getLinesForShape : List (Float, Float) -> List ((Float, Float), (Float, Float))
+        getLinesForShape shape =
+            List.map ((,) centerPoint) shape
+            
+        lineLists = List.map getLinesForShape listOfShapes
+    in
+        List.concat lineLists
