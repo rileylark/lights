@@ -20,8 +20,40 @@ dot2d (x1, y1) (x2, y2) =
 subtract : Point -> Point -> Vector
 subtract (x1, y1) (x2, y2) =
     (x1 - x2, y1 - y2)
-
-
+    
+    
+    
+{-|  takes a list of points and connects 'em in order w/ segments
+-}
+makeSegments : List Point -> List Segment
+makeSegments points =
+    let
+        maybeHead = List.head points
+        maybeTail = List.tail points
+    in
+        case maybeTail of
+            Just tail -> 
+                case maybeHead of
+                    Just head -> 
+                        List.map2 (,) points (tail ++ [head])
+                    Nothing -> [] -- this is impossible?
+            Nothing -> []
+            
+findClosest : Point -> List Point -> Maybe Point
+findClosest (x, y) targets =
+    let 
+        distances = List.map (\(tx, ty) -> 
+            let distance = (tx-x)^2 + (ty-y)^2
+            in (distance, (tx, ty)))
+            targets
+        
+        maybeMinimum = List.minimum distances
+        
+    in 
+        case maybeMinimum of
+            Just (smallestDistance, closestPoint) -> Just closestPoint
+            Nothing -> Nothing
+            
 cast : Point -> Segment -> Point -> Maybe Segment
 cast fromPoint againstSegment throughPoint  =
     let

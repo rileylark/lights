@@ -11,12 +11,41 @@ j = (0, 1)
 gameMathSuite = suite "GameMath Tests" 
     [ dot2d 
     , intersection 
+    , closest
+    , segments
     ]
 
 dot2d = test "dot2d" 
     ( assertEqual 0 (GameMath.dot2d i j)
     )
     
+closest = 
+    let
+        origin = (0, 0)
+        p1 = (1, 1)
+        p2 = (-2, -1)
+        
+        closestPoint = GameMath.findClosest origin [p1, p2]
+    in
+        test "closest" <| assertEqual closestPoint (Just p1)
+        
+segments =
+    let
+        points = 
+            [ (0, 0)
+            , (0, 1)
+            , (1, 1)
+            ]
+            
+        expectedSegments = 
+            [ ((0, 0), (0, 1))
+            , ((0, 1), (1, 1))
+            , ((1, 1), (0, 0))
+            ]
+            
+        actualSegments = GameMath.makeSegments points
+    in
+        test "makeSegments" <| assertEqual expectedSegments actualSegments
 intersection = 
     let        
         upAndRightRay = 

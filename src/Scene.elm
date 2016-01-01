@@ -52,6 +52,9 @@ spiderWeb centerPoint listOfShapes =
             , ((-2000, -2000), (-2000, 2000))
             ]
             
+        shapeSegments shape = 
+            GameMath.makeSegments shape 
+            
         getMaybeLinesForShape : 
             List (Float, Float) 
             -> ((Float, Float), (Float, Float))
