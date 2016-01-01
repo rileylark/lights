@@ -1,6 +1,7 @@
 module Scene where
 
 import Random 
+import GameMath
 
 initialSeed = Random.initialSeed 124
 
@@ -44,10 +45,39 @@ spiderWeb :
     
 spiderWeb centerPoint listOfShapes =
     let
-        getLinesForShape : List (Float, Float) -> List ((Float, Float), (Float, Float))
-        getLinesForShape shape =
-            List.map ((,) centerPoint) shape
+        topLine = ((-2000, 2000), (2000, 2000))
+        
+        getMaybeLinesForShape : List (Float, Float) -> List (Maybe ((Float, Float), (Float, Float)))
+        getMaybeLinesForShape shape =
+            let
+                possibleIntersectionPoint target = 
+                    let
+                        ray = { startAt = centerPoint, goTowards = target}
+                    in
+                        GameMath.intersect ray topLine
+                        
+            in
+                List.map (\pointFromShape -> 
+                    let possibleTarget = possibleIntersectionPoint pointFromShape
+                    in 
+                        case possibleTarget of 
+                            Just target -> Just (centerPoint, target)
+                            Nothing -> Nothing)
+                    shape
             
+        filteredMaybeLines shape = List.filter (\maybe -> 
+            case maybe of
+                Just a -> True
+                Nothing -> False)
+            <| getMaybeLinesForShape shape
+            
+        getLinesForShape shape =
+            List.map (\maybe ->
+                case maybe of
+                    Just val -> val
+                    Nothing -> Debug.crash "We should have filtered these out") 
+                <| filteredMaybeLines shape
+                
         lineLists = List.map getLinesForShape listOfShapes
     in
         List.concat lineLists
