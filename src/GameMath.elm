@@ -54,6 +54,24 @@ findClosest (x, y) targets =
             Just (smallestDistance, closestPoint) -> Just closestPoint
             Nothing -> Nothing
             
+castSpray : Point -> List Segment -> Point -> List Segment
+castSpray fromPoint againstSegments throughPoint =
+    let
+        (x, y) = throughPoint
+        right = (x + 0.0001, y + 0.0001)
+        left = (x - 0.0001, y - 0.0001)
+        
+        maybeRays = List.map (cast fromPoint againstSegments) [right, left]
+        
+        accumulateJusts maybe acc =
+            case maybe of 
+                Just val -> val :: acc
+                Nothing -> acc
+                
+    in
+        List.foldr accumulateJusts [] maybeRays
+    
+    
 cast : Point -> List Segment -> Point -> Maybe Segment
 cast fromPoint againstSegments throughPoint  =
     let

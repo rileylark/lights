@@ -55,23 +55,13 @@ spiderWeb centerPoint listOfShapes =
             
         collisionSegments = List.append borders <| List.concat <| List.map GameMath.makeSegments listOfShapes
             
-        getMaybeLinesForShape : 
+        getRaysForShape : 
             List (Float, Float) 
             -> List ((Float, Float), (Float, Float))
-            -> List (Maybe ((Float, Float), (Float, Float)))
-        getMaybeLinesForShape shape targetSegments =
-            List.map (GameMath.cast centerPoint targetSegments) shape
+        getRaysForShape shape  =
+            List.concat <| List.map (GameMath.castSpray centerPoint collisionSegments) shape
             
-        accumulateJusts maybe acc =
-            case maybe of 
-                Just val -> val :: acc
-                Nothing -> acc
-                    
-        maybeLines shape = getMaybeLinesForShape shape collisionSegments
-        
-        getLinesForShape shape =
-            List.foldl accumulateJusts [] (maybeLines shape)
-            
-        lineLists = List.map getLinesForShape listOfShapes
+        lineLists : List (List ((Float, Float), (Float, Float)))
+        lineLists = List.map getRaysForShape listOfShapes
     in
         List.concat lineLists
