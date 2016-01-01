@@ -50,22 +50,29 @@ scene input =
             ]
             
         rawTriangles = Scene.randomTriangles minX maxX
-        triangles = List.map (polygon >> filled clearGrey) rawTriangles
+        triangles = List.map (polygon >> filled darkYellow) rawTriangles
         
         rawDots = Scene.spiderWeb (cursorX, cursorY) <| border :: rawTriangles
-        lightMap = polygon rawDots |> filled yellow
+        lightMap = polygon rawDots |> gradient (lightGradient (cursorX, cursorY))
         dots = List.map (\(x, y) -> circle 10 |> filled red |> move (x, y)) rawDots
         
         cursor = circle 10 |> filled red |> move (cursorX, cursorY)
         backdrop = polygon border |> filled black
     in
-        collage windowWidth windowHeight ([backdrop, lightMap] ++ triangles ++ [cursor] )
+        collage windowWidth windowHeight ([backdrop, lightMap] ++ triangles )
+
+
+lightGradient (centerX, centerY) =
+    radial (centerX, centerY) 10 (centerX, centerY) 350
+    [ (  0, rgb  244 242 1)
+    , (  1, rgba 228 199 0 0)
+    ]
 
 red : Color
 red =
     rgb 255 0 0
     
-black = rgb 0 0 0
+darkYellow = rgb 20 20 0
 
 clearGrey : Color
 clearGrey =
