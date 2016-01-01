@@ -49,21 +49,7 @@ spiderWeb centerPoint listOfShapes =
         
         getMaybeLinesForShape : List (Float, Float) -> List (Maybe ((Float, Float), (Float, Float)))
         getMaybeLinesForShape shape =
-            let
-                possibleIntersectionPoint target = 
-                    let
-                        ray = { startAt = centerPoint, goTowards = target}
-                    in
-                        GameMath.intersect ray topLine
-                        
-            in
-                List.map (\pointFromShape -> 
-                    let possibleTarget = possibleIntersectionPoint pointFromShape
-                    in 
-                        case possibleTarget of 
-                            Just target -> Just (centerPoint, target)
-                            Nothing -> Nothing)
-                    shape
+            List.map (GameMath.cast centerPoint topLine) shape
             
         filteredMaybeLines shape = List.filter (\maybe -> 
             case maybe of

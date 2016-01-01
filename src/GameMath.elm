@@ -21,6 +21,17 @@ subtract : Point -> Point -> Vector
 subtract (x1, y1) (x2, y2) =
     (x1 - x2, y1 - y2)
 
+
+cast : Point -> Segment -> Point -> Maybe Segment
+cast fromPoint againstSegment throughPoint  =
+    let
+        ray = { startAt = fromPoint, goTowards = throughPoint}
+        maybeIntersection = intersect ray againstSegment
+    in
+        case maybeIntersection of
+            Just intersection -> Just (fromPoint, intersection)
+            Nothing -> Nothing
+
 intersect : Ray -> Segment -> Maybe Point
 intersect ray segment = 
     let 
