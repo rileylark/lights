@@ -41,7 +41,7 @@ randomTriangles lower upper =
 spiderWeb : 
     (Float, Float) 
     -> List (List (Float, Float)) 
-    -> List ((Float, Float), (Float, Float))
+    -> List (Float, Float)
     
 spiderWeb centerPoint listOfShapes =
     let
@@ -55,13 +55,13 @@ spiderWeb centerPoint listOfShapes =
             
         collisionSegments = List.append borders <| List.concat <| List.map GameMath.makeSegments listOfShapes
             
-        getRaysForShape : 
+        getIntersectionsForShape : 
             List (Float, Float) 
-            -> List ((Float, Float), (Float, Float))
-        getRaysForShape shape  =
+            -> List (Float, Float)
+        getIntersectionsForShape shape  =
             List.concat <| List.map (GameMath.castSpray centerPoint collisionSegments) shape
             
-        lineLists : List (List ((Float, Float), (Float, Float)))
-        lineLists = List.map getRaysForShape listOfShapes
+        intersectionLists : List (List (Float, Float))
+        intersectionLists = List.map getIntersectionsForShape listOfShapes
     in
-        List.concat lineLists
+        List.concat intersectionLists

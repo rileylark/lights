@@ -45,17 +45,12 @@ scene input =
         rawTriangles = Scene.randomTriangles minX maxX
         triangles = List.map (polygon >> filled clearGrey) rawTriangles
         
-        rawLines = Scene.spiderWeb (cursorX, cursorY) rawTriangles
-        
-        lineToForm (point1, point2) =
-            traced (solid red) (segment point1 point2)
-            
-        lines = List.map lineToForm rawLines
-        
+        rawDots = Scene.spiderWeb (cursorX, cursorY) rawTriangles
+        dots = List.map (\(x, y) -> circle 10 |> filled red |> move (x, y)) rawDots
         
         cursor = circle 10 |> filled red |> move (cursorX, cursorY)
     in
-        collage windowWidth windowHeight (lines ++ triangles ++ [cursor] )
+        collage windowWidth windowHeight (dots ++ triangles ++ [cursor] )
 
 red : Color
 red =
