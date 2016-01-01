@@ -10,24 +10,16 @@ type alias Ray =
     
 
 cross2d : Vector -> Vector -> Float
-cross2d vec1 vec2 =
-    let
-        (x1, y1) = vec1
-        (x2, y2) = vec2
-    in
-        x1*y2 - y1*x2
+cross2d (x1, y1) (x2, y2) =
+    x1*y2 - y1*x2
         
 dot2d : Vector -> Vector -> Float
 dot2d (x1, y1) (x2, y2) =
     x1 * x2 + y1 * y2
     
 subtract : Point -> Point -> Vector
-subtract p1 p2 =
-    let
-        (x1, y1) = p1
-        (x2, y2) = p2
-    in
-        (x1 - x2, y1 - y2)
+subtract (x1, y1) (x2, y2) =
+    (x1 - x2, y1 - y2)
 
 intersect : Ray -> Segment -> Maybe Point
 intersect ray segment = 
