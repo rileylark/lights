@@ -42,20 +42,33 @@ scene input =
         cursorX = toFloat mouseX - maxX
         cursorY = (toFloat mouseY - maxY) * -1 -- mouse y is upside down
         
+        border = 
+            [ (minX, minY)
+            , (maxX, minY)
+            , (maxX, maxY)
+            , (minX, maxY)
+            ]
+            
         rawTriangles = Scene.randomTriangles minX maxX
         triangles = List.map (polygon >> filled clearGrey) rawTriangles
         
-        rawDots = Scene.spiderWeb (cursorX, cursorY) rawTriangles
+        rawDots = Scene.spiderWeb (cursorX, cursorY) <| border :: rawTriangles
+        lightMap = polygon rawDots |> filled yellow
         dots = List.map (\(x, y) -> circle 10 |> filled red |> move (x, y)) rawDots
         
         cursor = circle 10 |> filled red |> move (cursorX, cursorY)
+        backdrop = polygon border |> filled black
     in
-        collage windowWidth windowHeight (dots ++ triangles ++ [cursor] )
+        collage windowWidth windowHeight ([backdrop, lightMap] ++ triangles ++ [cursor] )
 
 red : Color
 red =
     rgb 255 0 0
     
+black = rgb 0 0 0
+
 clearGrey : Color
 clearGrey =
   rgba 111 111 111 0.6
+  
+yellow = rgb 255 255 0

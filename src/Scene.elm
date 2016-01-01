@@ -45,15 +45,7 @@ spiderWeb :
     
 spiderWeb centerPoint listOfShapes =
     let
-        borders : List ((Float, Float), (Float, Float))
-        borders = 
-            [ ((-2000, 2000), (2000, 2000))
-            , ((2000, 2000), (2000, -2000))
-            , ((2000, -2000), (-2000, -2000))
-            , ((-2000, -2000), (-2000, 2000))
-            ]
-            
-        collisionSegments = List.append borders <| List.concat <| List.map GameMath.makeSegments listOfShapes
+        collisionSegments = List.concat <| List.map GameMath.makeSegments listOfShapes
             
         getIntersectionsForShape : 
             List (Float, Float) 
@@ -61,7 +53,7 @@ spiderWeb centerPoint listOfShapes =
         getIntersectionsForShape shape  =
             List.concat <| List.map (GameMath.castSpray centerPoint collisionSegments) shape
             
-        intersectionLists : List (List (Float, Float))
-        intersectionLists = List.map getIntersectionsForShape listOfShapes
+        rayIntersections = List.concat <| List.map getIntersectionsForShape listOfShapes
+        sorted = GameMath.sortClockwise centerPoint rayIntersections
     in
-        List.concat intersectionLists
+        sorted

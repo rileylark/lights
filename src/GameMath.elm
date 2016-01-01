@@ -111,3 +111,15 @@ intersect ray segment =
                     in Just (rayStartX + t * rayDx, rayStartY + t * rayDy)
                 else 
                     Nothing -- their lines cross but the rays & segments don't
+
+sortClockwise : Point -> List Point -> List Point
+sortClockwise (originX, originY) pointsToSort =
+    let
+        angle (toX, toY) = -1 * atan2 (toY - originY) (toX - originX)
+        addAngle point = { angle = angle point, point = point}
+        pointsWithAngles = List.map addAngle pointsToSort
+        sorted = List.sortBy .angle pointsWithAngles
+        
+    in
+        List.map .point sorted
+        
