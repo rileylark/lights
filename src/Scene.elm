@@ -51,19 +51,14 @@ spiderWeb centerPoint listOfShapes =
         getMaybeLinesForShape shape =
             List.map (GameMath.cast centerPoint topLine) shape
             
-        filteredMaybeLines shape = List.filter (\maybe -> 
-            case maybe of
-                Just a -> True
-                Nothing -> False)
-            <| getMaybeLinesForShape shape
-            
+        accumulateJusts maybe acc =
+            case maybe of 
+                Just val -> val :: acc
+                Nothing -> acc
+                    
         getLinesForShape shape =
-            List.map (\maybe ->
-                case maybe of
-                    Just val -> val
-                    Nothing -> Debug.crash "We should have filtered these out") 
-                <| filteredMaybeLines shape
-                
+            List.foldl accumulateJusts [] (getMaybeLinesForShape shape)
+            
         lineLists = List.map getLinesForShape listOfShapes
     in
         List.concat lineLists
