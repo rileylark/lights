@@ -37,7 +37,21 @@ randomTriangles lower upper =
         
     in
         shapes
-        
+
+    
+fuzzyLights centerPoint listOfShapes =
+    let 
+        (x, y) = centerPoint
+        pointSources = 
+            [ (x + 3, y + 3)
+            , (x + 3, y - 3)
+            , (x - 3, y + 3)
+            , (x - 3, y - 3)
+            ]    
+    
+    in
+        List.map (\pointSource -> spiderWeb pointSource listOfShapes) pointSources
+    
 spiderWeb : 
     (Float, Float) 
     -> List (List (Float, Float)) 

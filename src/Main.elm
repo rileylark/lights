@@ -52,14 +52,15 @@ scene input =
         rawTriangles = Scene.randomTriangles minX maxX
         triangles = List.map (polygon >> filled darkYellow) rawTriangles
         
-        rawDots = Scene.spiderWeb (cursorX, cursorY) <| border :: rawTriangles
-        lightMap = polygon rawDots |> gradient (lightGradient (cursorX, cursorY))
-        dots = List.map (\(x, y) -> circle 10 |> filled red |> move (x, y)) rawDots
+        rawLightMaps = Scene.fuzzyLights (cursorX, cursorY) <| border :: rawTriangles
+        lightMaps = 
+            List.map (polygon >> gradient (lightGradient (cursorX, cursorY))) rawLightMaps
+
         
         cursor = circle 10 |> filled red |> move (cursorX, cursorY)
         backdrop = polygon border |> filled black
     in
-        collage windowWidth windowHeight ([backdrop, lightMap] ++ triangles )
+        collage windowWidth windowHeight ([backdrop] ++ triangles ++ lightMaps)
 
 
 lightGradient (centerX, centerY) =
