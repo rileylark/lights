@@ -9,7 +9,7 @@ import Tests.GameMath
 
 tests : IO ()
 tests = 
-    consoleRunner Tests.GameMath.suite
+    consoleRunner Tests.GameMath.gameMathSuite
 
 
 port runner : Signal (Task.Task x ())

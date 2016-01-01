@@ -42,9 +42,18 @@ intersect ray segment =
             Nothing -- they're parallel or collinear
         else  
             let
-                t = (cross2d (subtract segmentA ray.startAt) rayDirection) / (cross2d rayDirection segmentDirection)
-                u = (cross2d (subtract segmentA ray.startAt) rayDirection) / (cross2d segmentDirection rayDirection)
-                (rayDirectionX, rayDirectionY) = rayDirection
-                (rayStartX, rayStartY) = ray.startAt
+                (rayDx, rayDy) = rayDirection
+            
+                v1 = subtract ray.startAt segmentA
+                v2 = subtract segmentB segmentA
+                v3 = (-rayDy, rayDx)
+                
+                t = (cross2d v2 v1) / (dot2d v2 v3)
+                u = (dot2d v1 v3) / (dot2d v2 v3)
+                
             in
-                Just (rayStartX + t * rayDirectionX, rayStartY + t * rayDirectionY)
+                if t >= 0 && 0 <= u && u <= 1 then
+                    let (rayStartX, rayStartY) = ray.startAt
+                    in Just (rayStartX + t * rayDx, rayStartY + t * rayDy)
+                else 
+                    Nothing -- their lines cross but the rays & segments don't
