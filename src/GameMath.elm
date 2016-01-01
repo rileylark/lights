@@ -54,13 +54,16 @@ findClosest (x, y) targets =
             Just (smallestDistance, closestPoint) -> Just closestPoint
             Nothing -> Nothing
             
-cast : Point -> Segment -> Point -> Maybe Segment
-cast fromPoint againstSegment throughPoint  =
+cast : Point -> List Segment -> Point -> Maybe Segment
+cast fromPoint againstSegments throughPoint  =
     let
         ray = { startAt = fromPoint, goTowards = throughPoint}
-        maybeIntersection = intersect ray againstSegment
+        maybeIntersections = List.map (intersect ray) againstSegments
+        
+        defaulted = List.map (Maybe.withDefault (100000, 100000)) maybeIntersections
+        closestPoint = findClosest fromPoint defaulted
     in
-        case maybeIntersection of
+        case closestPoint of
             Just intersection -> Just (fromPoint, intersection)
             Nothing -> Nothing
 

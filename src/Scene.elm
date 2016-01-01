@@ -45,29 +45,29 @@ spiderWeb :
     
 spiderWeb centerPoint listOfShapes =
     let
-        borderLines = 
+        borders : List ((Float, Float), (Float, Float))
+        borders = 
             [ ((-2000, 2000), (2000, 2000))
             , ((2000, 2000), (2000, -2000))
             , ((2000, -2000), (-2000, -2000))
             , ((-2000, -2000), (-2000, 2000))
             ]
             
-        shapeSegments shape = 
-            GameMath.makeSegments shape 
+        collisionSegments = List.append borders <| List.concat <| List.map GameMath.makeSegments listOfShapes
             
         getMaybeLinesForShape : 
             List (Float, Float) 
-            -> ((Float, Float), (Float, Float))
+            -> List ((Float, Float), (Float, Float))
             -> List (Maybe ((Float, Float), (Float, Float)))
-        getMaybeLinesForShape shape targetSegment =
-            List.map (GameMath.cast centerPoint targetSegment) shape
+        getMaybeLinesForShape shape targetSegments =
+            List.map (GameMath.cast centerPoint targetSegments) shape
             
         accumulateJusts maybe acc =
             case maybe of 
                 Just val -> val :: acc
                 Nothing -> acc
                     
-        maybeLines shape = List.concat <| List.map (getMaybeLinesForShape shape) borderLines
+        maybeLines shape = getMaybeLinesForShape shape collisionSegments
         
         getLinesForShape shape =
             List.foldl accumulateJusts [] (maybeLines shape)
