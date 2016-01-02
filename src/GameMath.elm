@@ -60,17 +60,10 @@ castSpray fromPoint againstSegments throughPoint =
         (x, y) = throughPoint
         right = (x + 0.0001, y + 0.0001)
         left = (x - 0.0001, y - 0.0001)
-        
-        maybeRays = List.map (cast fromPoint againstSegments) [right, left]
-        
-        accumulateJusts maybe acc =
-            case maybe of 
-                Just val -> val :: acc
-                Nothing -> acc
-                
+
     in
-        List.foldr accumulateJusts [] maybeRays
-    
+        List.filterMap (cast fromPoint againstSegments) [right, left]
+
     
 cast : Point -> List Segment -> Point -> Maybe Point
 cast fromPoint againstSegments throughPoint  =
