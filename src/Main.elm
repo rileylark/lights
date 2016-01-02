@@ -4,35 +4,71 @@ import Graphics.Element exposing (..)
 import Mouse
 import Window
 import Time
+import Task
+import Signal
 
 import Scene
+import CycleApp
 
 
-type alias GameInput =
-    { mouse: (Int, Int)
-    , window: (Int, Int)
+type Action = 
+    MouseMoved (Int, Int)
+    | WindowSized (Int, Int)
+    
+type alias Model =
+    { windowDimensions : (Int, Int)
+    , mousePosition : (Int, Int)
+    }
+    
+initialState = 
+    { windowDimensions = (600, 600)
+    , mousePosition = (50, 200)
+    }
+    
+appConfig : CycleApp.Config Action Model Element
+appConfig = 
+    { initialState = initialState
+    , update = update
+    , view = view
     }
 
-main : Signal Element
-main =
-    let
-        constructInputs mousePosition windowDimensions =
-            { mouse = mousePosition
-            , window = windowDimensions
+update action state =
+    case action of
+        MouseMoved newPosition -> 
+            { state |
+                mousePosition = newPosition 
             }
+                
+        WindowSized newDimensions ->
+            { state |
+                windowDimensions = newDimensions 
+            }
+    
+view actionAddress taskAddress state =
+    scene state
+    
+app = CycleApp.create appConfig
 
-        inputs = Signal.map2 constructInputs Mouse.position Window.dimensions
+main : Signal Element
+main = app.output
 
-        frames = Signal.sampleOn (Time.fps 60) inputs
-    in
+mouseMoves = Signal.map MouseMoved Mouse.position
+windowSizes = Signal.map WindowSized Window.dimensions
 
-        Signal.map scene frames
+actionDispatcher = Signal.map (\action -> Signal.send app.notificationAddress action)
 
-scene : GameInput -> Element
-scene input =
+port tasks : Signal (Task.Task () ())
+port tasks = Signal.mergeMany 
+    [ actionDispatcher windowSizes
+    , actionDispatcher mouseMoves
+    , app.tasksToRun
+    ]
+
+scene : Model -> Element
+scene state =
     let
-        (mouseX, mouseY) = input.mouse
-        (windowWidth, windowHeight) = input.window
+        (mouseX, mouseY) = state.mousePosition
+        (windowWidth, windowHeight) = state.windowDimensions
 
         maxX = toFloat windowWidth / 2
         minX = -maxX
