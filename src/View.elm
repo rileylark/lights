@@ -15,15 +15,6 @@ scene actionAddress taskAddress state =
         (mouseX, mouseY) = state.mousePosition
         (windowWidth, windowHeight) = state.windowDimensions
 
-        maxX = toFloat windowWidth / 2
-        minX = -maxX
-
-        maxY = toFloat windowHeight / 2
-        minY = -maxY
-
-        cursorX = toFloat mouseX - maxX
-        cursorY = (toFloat mouseY - maxY) * -1 -- mouse y is upside down
-
         levelShapes = state.gameState.shapes
         levelBorder = state.gameState.border
         

@@ -8,3 +8,14 @@ type alias LevelState =
     , shapes : List Shape
     , border : Shape
     }
+    
+type LevelAction =
+    MoveLight Point
+    
+update : LevelAction -> LevelState -> LevelState
+update action oldState =
+    case action of
+        MoveLight newPosition ->
+            { oldState |
+                lightPosition = newPosition
+            }

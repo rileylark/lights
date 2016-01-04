@@ -22,12 +22,29 @@ initialState =
 update action state =
     case action of
         MouseMoved newPosition -> 
-            { state |
-                mousePosition = newPosition 
+            let
+                cursorPosition = convertMousePosition state.windowDimensions newPosition
+                
+            in
+            { state 
+                | mousePosition = newPosition 
+                , gameState = Levels.Common.update (Levels.Common.MoveLight cursorPosition) state.gameState
             }
                 
         WindowSized newDimensions ->
             { state |
                 windowDimensions = newDimensions 
             }
+            
+convertMousePosition : (Int, Int) ->  (Int, Int) -> (Float, Float)
+convertMousePosition (windowWidth, windowHeight) (mouseX, mouseY) =
+    let
+        maxX = toFloat windowWidth / 2
+        maxY = toFloat windowHeight / 2
+
+        cursorX = toFloat mouseX - maxX
+        cursorY = (toFloat mouseY - maxY) * -1 -- mouse y is upside down
+        
+    in
+        (cursorX, cursorY)
     
