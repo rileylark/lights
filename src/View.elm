@@ -24,23 +24,18 @@ scene actionAddress taskAddress state =
         cursorX = toFloat mouseX - maxX
         cursorY = (toFloat mouseY - maxY) * -1 -- mouse y is upside down
 
-        border =
-            [ (minX, minY)
-            , (maxX, minY)
-            , (maxX, maxY)
-            , (minX, maxY)
-            ]
+        levelShapes = state.gameState.shapes
+        levelBorder = state.gameState.border
+        
+        triangles = List.map (polygon >> filled darkYellow) levelShapes
+        
+        lightPosition = state.gameState.lightPosition
 
-        rawTriangles = Scene.randomTriangles minX maxX
-        triangles = List.map (polygon >> filled darkYellow) rawTriangles
-
-        rawLightMaps = Scene.fuzzyLights (cursorX, cursorY) <| border :: rawTriangles
+        rawLightMaps = Scene.fuzzyLights lightPosition <| levelBorder :: levelShapes
         lightMaps =
-            List.map (polygon >> gradient (lightGradient (cursorX, cursorY))) rawLightMaps
+            List.map (polygon >> gradient (lightGradient lightPosition)) rawLightMaps
 
-
-        cursor = circle 10 |> filled red |> move (cursorX, cursorY)
-        backdrop = polygon border |> filled darkYellow
+        backdrop = polygon levelBorder |> filled darkYellow
     in
         collage windowWidth windowHeight ([backdrop] ++ triangles ++ lightMaps)
 
