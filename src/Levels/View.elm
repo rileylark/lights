@@ -13,19 +13,18 @@ scene state =
         (mouseX, mouseY) = state.mousePosition
         (windowWidth, windowHeight) = state.windowDimensions
 
-        levelShapes = state.gameState.shapes
-        levelBorder = state.gameState.border
+        (level, calculated) = state.gameState
         
-        triangles = List.map (polygon >> filled darkYellow) levelShapes
+        triangles = List.map (polygon >> filled darkYellow) level.shapes
         
-        lightPosition = state.gameState.lightPosition
+        lightPosition = level.lightPosition
 
         lightMaps =
-            List.map (polygon >> gradient (lightGradient lightPosition)) state.gameState.calculated.lightMaps
+            List.map (polygon >> gradient (lightGradient lightPosition)) calculated.lightMaps
 
-        backdrop = polygon levelBorder |> filled darkYellow
+        backdrop = polygon level.border |> filled darkYellow
         
-        detectors = List.map detector state.gameState.detectors
+        detectors = List.map detector level.detectors
     in
         collage windowWidth windowHeight ([backdrop] ++ triangles ++ lightMaps ++ detectors )
 

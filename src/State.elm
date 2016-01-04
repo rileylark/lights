@@ -10,13 +10,13 @@ type Action =
 type alias Model =
     { windowDimensions : (Int, Int)
     , mousePosition : (Int, Int)
-    , gameState : Levels.Common.LevelState
+    , gameState : Levels.Common.BakedLevelState
     }
     
 initialState = 
     { windowDimensions = (600, 600)
     , mousePosition = (50, 200)
-    , gameState = Level01.initialState
+    , gameState = (Level01.initialState, Levels.Common.calculateLevel Level01.initialState)
     }
     
 update action state =
@@ -24,11 +24,11 @@ update action state =
         MouseMoved newPosition -> 
             let
                 cursorPosition = convertMousePosition state.windowDimensions newPosition
-                
+                (level, baked) = state.gameState
             in
             { state 
                 | mousePosition = newPosition 
-                , gameState = Levels.Common.update (Levels.Common.MoveLight cursorPosition) state.gameState
+                , gameState = Levels.Common.update (Levels.Common.MoveLight cursorPosition) level
             }
                 
         WindowSized newDimensions ->

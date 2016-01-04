@@ -11,7 +11,6 @@ type alias Detector =
     { position : Point
     , lit :
         { goal : LitState
-        , current : LitState 
         }
     }
     
@@ -19,15 +18,20 @@ type alias LevelState =
     { lightPosition : Point
     , shapes : List Shape
     , border : Shape
-    , detectors : List Detector
-    , calculated : 
-        { lightMaps : List Shape }
+    , detectors : List Detector    
     }
+    
+type alias BakedLevelState = 
+    (   LevelState  
+    ,   {   lightMaps : List Shape 
+        ,   detectors : List (Detector, LitState)
+        }
+    )
     
 type LevelAction =
     MoveLight Point
     
-update : LevelAction -> LevelState -> LevelState
+update : LevelAction -> LevelState -> BakedLevelState
 update action oldState =
     let 
         intermediateState = 
@@ -37,11 +41,15 @@ update action oldState =
                         lightPosition = newPosition
                     }
     in
-        { intermediateState |
-            calculated = {
-                lightMaps = calculateLightMaps intermediateState
-            }
-        }
-            
+        (intermediateState, calculateLevel intermediateState)
+        
+calculateLevel levelState = 
+    { lightMaps = calculateLightMaps levelState 
+    , detectors = calculateDetectors levelState
+    }
+        
+calculateDetectors levelState =
+    []
+        
 calculateLightMaps levelState = 
     Scene.fuzzyLights levelState.lightPosition <| levelState.border :: levelState.shapes

@@ -18,9 +18,7 @@ initialState =
         [ { position = (50, 50)
           , lit = 
               { goal = Levels.Common.Lit 1
-              , current= Levels.Common.Lit 0
               }
           }
         ]
-    , calculated = { lightMaps = [] }
     }
