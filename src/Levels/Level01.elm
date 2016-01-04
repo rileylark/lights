@@ -16,9 +16,7 @@ initialState =
         ]
     , detectors = 
         [ { position = (50, 50)
-          , lit = 
-              { goal = Levels.Common.Lit 1
-              }
+          , litGoal = 0
           }
         ]
     }

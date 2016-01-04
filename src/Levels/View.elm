@@ -24,13 +24,20 @@ scene state =
 
         backdrop = polygon level.border |> filled darkYellow
         
-        detectors = List.map detector level.detectors
+        detectors = List.map detector calculated.detectors
     in
         collage windowWidth windowHeight ([backdrop] ++ triangles ++ lightMaps ++ detectors )
 
 
-detector d =
-    circle 5 |> filled red |> move d.position
+detector (d, lit) =
+    let
+        fillColor = 
+            if lit == d.litGoal then
+                Color.green
+            else
+                Color.red
+    in
+        circle 5 |> filled fillColor |> move d.position
     
 lightGradient : ( Float, Float ) -> Color.Gradient
 lightGradient (centerX, centerY) =

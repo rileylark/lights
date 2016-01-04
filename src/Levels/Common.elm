@@ -5,13 +5,11 @@ import Scene
 type alias Point = (Float, Float)
 type alias Shape = List (Float, Float)
 
-type LitState = Lit Int -- lit by how many lights?
+type alias LitState = Int -- lit by how many lights?
     
 type alias Detector = 
     { position : Point
-    , lit :
-        { goal : LitState
-        }
+    , litGoal : Int
     }
     
 type alias LevelState =
@@ -49,7 +47,12 @@ calculateLevel levelState =
     }
         
 calculateDetectors levelState =
-    []
+    let 
+        calcDetector detector =
+            (detector, 0)
+            
+    in
+        List.map calcDetector levelState.detectors
         
 calculateLightMaps levelState = 
     Scene.fuzzyLights levelState.lightPosition <| levelState.border :: levelState.shapes
