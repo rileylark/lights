@@ -16,7 +16,7 @@ initialState =
         ]
     , detectors = 
         [ { position = (50, 50)
-          , litGoal = 0
+          , litGoal = 1
           }
         ]
     }

@@ -1,6 +1,7 @@
 module Levels.Common where
 
 import Scene 
+import GameMath
 
 type alias Point = (Float, Float)
 type alias Shape = List (Float, Float)
@@ -48,8 +49,14 @@ calculateLevel levelState =
         
 calculateDetectors levelState =
     let 
+        obstacleSegments = List.concat <| List.map GameMath.makeSegments levelState.shapes
+        
         calcDetector detector =
-            (detector, 0)
+            let
+                visible = GameMath.visible detector.position levelState.lightPosition obstacleSegments
+                numVisible = if visible then 1 else 0
+            in
+                (detector, numVisible)
             
     in
         List.map calcDetector levelState.detectors

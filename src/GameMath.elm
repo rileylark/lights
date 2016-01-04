@@ -64,7 +64,23 @@ castSpray fromPoint againstSegments throughPoint =
     in
         List.filterMap (cast fromPoint againstSegments) [right, left]
 
+visible : Point -> Point -> List Segment -> Bool
+visible targetPoint fromPoint potentialObstacles =
+    let
+        criticalSegment = (fromPoint, targetPoint)
+    in
+        not <| List.any (intersectSegment criticalSegment) potentialObstacles
     
+intersectSegment segA segB =
+    let
+        maybeIntersectionParams = intersectParams segA segB
+        
+    in
+        case maybeIntersectionParams of
+            Nothing -> False
+            Just (t, u) -> 
+                t >= 0 && t <= 1 && u >= 0 && u <= 1
+                
 cast : Point -> List Segment -> Point -> Maybe Point
 cast fromPoint againstSegments throughPoint  =
     let
@@ -76,31 +92,44 @@ cast fromPoint againstSegments throughPoint  =
     in
         findClosest fromPoint defaulted
         
-intersect : Ray -> Segment -> Maybe Point
-intersect ray segment = 
-    let 
-        rayDirection = subtract ray.goTowards ray.startAt
-        
-        (segmentA, segmentB) = segment
-        segmentDirection = subtract segmentB segmentA
+intersectParams : Segment -> Segment -> Maybe (Float, Float)
+intersectParams (a, a') (b, b') =
+    let
+        aDirection = subtract a' a
+        bDirection = subtract b' b
         
     in
-        if cross2d rayDirection segmentDirection == 0 then
+        if cross2d aDirection bDirection == 0 then
             Nothing -- they're parallel or collinear
-        else  
-            let
-                (rayDx, rayDy) = rayDirection
             
-                v1 = subtract ray.startAt segmentA
-                v2 = subtract segmentB segmentA
-                v3 = (-rayDy, rayDx)
+        else
+            let
+                (aDx, aDy) = aDirection
+                
+                v1 = subtract a b
+                v2 = subtract b' b
+                v3 = (-aDy, aDx)
                 
                 t = (cross2d v2 v1) / (dot2d v2 v3)
                 u = (dot2d v1 v3) / (dot2d v2 v3)
                 
-            in
+            in 
+                Just (t, u)
+                
+
+intersect : Ray -> Segment -> Maybe Point
+intersect ray segment = 
+    let 
+        maybeIntersectionParams = intersectParams (ray.startAt, ray.goTowards) segment
+        
+    in
+        case maybeIntersectionParams of
+            Nothing -> Nothing
+            Just (t, u) -> 
                 if t >= 0 && 0 <= u && u <= 1 then
-                    let (rayStartX, rayStartY) = ray.startAt
+                    let 
+                        (rayStartX, rayStartY) = ray.startAt
+                        (rayDx, rayDy) = subtract ray.goTowards ray.startAt
                     in Just (rayStartX + t * rayDx, rayStartY + t * rayDy)
                 else 
                     Nothing -- their lines cross but the rays & segments don't
