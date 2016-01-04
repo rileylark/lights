@@ -22,4 +22,5 @@ initialState =
               }
           }
         ]
+    , calculated = { lightMaps = [] }
     }

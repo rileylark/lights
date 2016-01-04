@@ -7,8 +7,6 @@ import State
 import Signal
 import Task
 
-import Scene
-
 scene : State.Model -> Element
 scene state =
     let
@@ -22,9 +20,8 @@ scene state =
         
         lightPosition = state.gameState.lightPosition
 
-        rawLightMaps = Scene.fuzzyLights lightPosition <| levelBorder :: levelShapes
         lightMaps =
-            List.map (polygon >> gradient (lightGradient lightPosition)) rawLightMaps
+            List.map (polygon >> gradient (lightGradient lightPosition)) state.gameState.calculated.lightMaps
 
         backdrop = polygon levelBorder |> filled darkYellow
         

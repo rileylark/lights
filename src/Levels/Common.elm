@@ -1,5 +1,7 @@
 module Levels.Common where
 
+import Scene 
+
 type alias Point = (Float, Float)
 type alias Shape = List (Float, Float)
 
@@ -18,6 +20,8 @@ type alias LevelState =
     , shapes : List Shape
     , border : Shape
     , detectors : List Detector
+    , calculated : 
+        { lightMaps : List Shape }
     }
     
 type LevelAction =
@@ -25,8 +29,19 @@ type LevelAction =
     
 update : LevelAction -> LevelState -> LevelState
 update action oldState =
-    case action of
-        MoveLight newPosition ->
-            { oldState |
-                lightPosition = newPosition
+    let 
+        intermediateState = 
+            case action of
+                MoveLight newPosition ->
+                    { oldState |
+                        lightPosition = newPosition
+                    }
+    in
+        { intermediateState |
+            calculated = {
+                lightMaps = calculateLightMaps intermediateState
             }
+        }
+            
+calculateLightMaps levelState = 
+    Scene.fuzzyLights levelState.lightPosition <| levelState.border :: levelState.shapes
