@@ -8,6 +8,15 @@
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/github-dark.css">
     <script src="javascripts/scale.fix.js"></script>
+    <script src="javascripts/lights.js"></script>
+    <script>
+    window.addEventListener('load', function () {
+        var gameDiv = document.getElementById('gameDiv');
+        
+        Elm.embed(Elm.Main, gameDiv);
+    });
+    
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
     <!--[if lt IE 9]>
@@ -17,7 +26,7 @@
   <body>
     <div class="wrapper">
       <header>
-        <h1>Lights</h1>
+        <h1>Elm Lights</h1>
         <p>Just messin&#39; around with Elm</p>
         <p class="view"><a href="https://github.com/rileylark/lights">View the Project on GitHub <small>rileylark/lights</small></a></p>
         <ul>
@@ -27,10 +36,14 @@
         </ul>
       </header>
       <section>
-        <h3>
-<a id="elm-lights" class="anchor" href="#elm-lights" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Elm Lights!</h3>
 
-<p>Just messin' around with Elm</p>
+<p>Just messin' around with Elm.
+</p>
+<p>
+    Try to turn all the sensors green! 
+</p>
+    <div id="gameDiv" style="width: 400px; height: 400px; margin: 0 auto">
+    </div>
       </section>
     </div>
     <footer>
